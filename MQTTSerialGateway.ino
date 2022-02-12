@@ -27,7 +27,7 @@
 #define MQTT_PASSWORD "MQTT_Password"
 #define MQTT_CLIENT_ID "MQTT_ClientID"
 #define MQTT_STATE_TOPIC "serial/state" // all received serial messages are send to this topic
-#define MQTT_COMMAND_TOPIC "serial/command"
+#define MQTT_COMMAND_TOPIC "serial/command" // all messages received on this topic are printed on serial
 #define SERIAL_SPEED 115200
 
 /************************* Global Variables *********************************/
