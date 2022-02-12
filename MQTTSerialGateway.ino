@@ -38,27 +38,14 @@
 #define MQTT_USERNAME "MQTT_Username"
 #define MQTT_PASSWORD "MQTT_Password"
 #define MQTT_CLIENT_ID "MQTT_ClientID"
-#define MQTT_DEBUGTOPIC "NodeMCU/Debug" // all received serial messages are send to this topic
-
-#define MQTT_NUMBERSOFTOPIC 5  // Keeps a list of subscribed topics to re-subscribe after disconnect
-
-/************************* NTP Server (Time) *********************************/
-
-#define NTP_SERVER "de.pool.ntp.org" // change to a timerserver near you
-#define NTP_CORRECTION_SECONDS 7200 // in my case:  1hour for germany  + 1h for summertime
+#define MQTT_STATE_TOPIC "serial/state" // all received serial messages are send to this topic
+#define MQTT_COMMAND_TOPIC "serial/command"
 
 /************************* Global Variables *********************************/
-
-
-// Time
-WiFiUDP ntpUDP;
-NTPClient timeClient(ntpUDP, NTP_SERVER, NTP_CORRECTION_SECONDS);
 
 // MQTT
 WiFiClient WiFiclient;
 PubSubClient MQTTclient(MQTT_SERVER, MQTT_PORT, callback, WiFiclient); 
-String subscribedTopics[MQTT_NUMBERSOFTOPIC];
-int numbersoftopic = 0; // current position in subsribedTopics
 
 // Serial Connection
 String serialInput;
@@ -67,7 +54,7 @@ String serialInput;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(57600);
+  Serial.begin(115200);
   delay(10);
 
   // Connect to WiFi access point.
@@ -75,21 +62,17 @@ void setup() {
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
   }
-  Serial.println("WiFi connected");
-
+  
   // Connect to MQTT
   while (!MQTTclient.connected()) {
     reconnect();
-
   }
 
-  // Connect to NTP
-  timeClient.begin();
+  subscribeTo(MQTT_COMMAND_TOPIC);
 }
 
 
 void loop() {
-
   if (!MQTTclient.connected()) {
     reconnect();
   }
@@ -109,5 +92,3 @@ void loop() {
   }
 
 }
-
-
