@@ -1,27 +1,15 @@
 /****************************
-
-    MQTT_Gateway
-
-    The gateway is connected to a second arduino via a serial connection
-    Serial speed is set to 57600
-
-   Serial Messages:
-   Send MQTT Message (including the brackets): [Topic][Message]
-   Subsribe to Topics: +Topic
-   Unsubscribe: -Topic
-   Get current Time: Time
-   Received Messagesformat: [Topic][Message}
-
+  MQTT Serial Gateway
+  
+  - Publish all messages received via serial to state MQTT topic
+  - Forward all messages received on the command topic to serial
+  
 */
 // Libraries for WIFI
 #include <ESP8266WiFi.h>
 
 // Libraries for MQTT
 #include "PubSubClient.h"
-
-// Libraries for Time
-#include <NTPClient.h>
-#include <WiFiUdp.h>
 
 // Signatures for functions used in this file
 #include "definitions.h"
@@ -40,6 +28,7 @@
 #define MQTT_CLIENT_ID "MQTT_ClientID"
 #define MQTT_STATE_TOPIC "serial/state" // all received serial messages are send to this topic
 #define MQTT_COMMAND_TOPIC "serial/command"
+#define SERIAL_SPEED 115200
 
 /************************* Global Variables *********************************/
 
@@ -54,7 +43,7 @@ String serialInput;
 
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);
+  Serial.begin(SERIAL_SPEED);
   delay(10);
 
   // Connect to WiFi access point.
